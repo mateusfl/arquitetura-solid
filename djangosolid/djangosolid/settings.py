@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'core',
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -78,6 +80,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+DATABASES['db_solid'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db_solid.sqlite3',
+    'ATOMIC_REQUESTS': False,
+    'TIME_ZONE': 'America/Fortaleza',
+    'CONN_HEALTH_CHECKS': True,
+    'CONN_MAX_AGE': 60,
+    'AUTOCOMMIT': True,
 }
 
 

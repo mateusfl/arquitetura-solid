@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}CRUD de vendas{% endblock %}
+{% block content %}
+    <section class="card">
+        <h1>Teste dos CRUDs</h1>
+        <p class="muted">Escolha uma entidade para cadastrar, consultar, editar ou excluir registros.</p>
+    </section>
+    <section class="grid">
+        {% for slug, titulo in recursos %}
+            <article class="card">
+                <h2>{{ titulo }}</h2>
+                <a class="button" href="{% url 'core:listar' recurso=slug %}">Abrir CRUD</a>
+            </article>
+        {% endfor %}
+    </section>
+{% endblock %}

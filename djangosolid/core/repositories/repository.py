@@ -1,164 +1,126 @@
-"""Repositórios em memória para os modelos do domínio."""
+"""Repositórios de domínio que delegam persistência aos DAOs ORM."""
 
-from __future__ import annotations
-
-from interfaces import (
-    CategoriaDAOInterface,
-    FormaPagamentoDAOInterface,
-    ProdutoDAOInterface,
-    VendaDAOInterface,
-    VendaProdutoDAOInterface,
+from core.entities.dominio import (
+    CategoriaModel as Categoria,
+    FormaPagamentoModel as FormaPagamento,
+    ProdutoModel as Produto,
+    VendaModel as Venda,
+    VendaProduto as ItemVenda,
 )
-from models import (
-    CategoriaModel,
-    FormaPagamentoModel,
-    ProdutoModel,
-    VendaModel,
-    VendaProduto,
+from core.implementation.services.dao import (
+    CategoriaDAO_ORM,
+    ConexaoBD_ORM,
+    FormaPagamentoDAO_ORM,
+    ProdutoDAO_ORM,
+    VendaDAO_ORM,
+    VendaProdutoDAO_ORM,
 )
+from core.ports.interfaces import IConexaoBD, InterfaceDAO
 
 
-class CategoriaRepository(CategoriaDAOInterface):
-    """Repositório em memória para `CategoriaModel`."""
+class CategoriaRepository(InterfaceDAO[Categoria]):
+    def __init__(self, conexao: IConexaoBD | None = None) -> None:
+        self.dao = CategoriaDAO_ORM(conexao or ConexaoBD_ORM())
 
-    def __init__(self) -> None:
-        self._categorias: dict[int, CategoriaModel] = {}
-        self._proximo_id = 1
+    def incluir(self, entidade: Categoria) -> Categoria:
+        return self.dao.incluir(entidade)
 
-    def inserir(self, categoria: CategoriaModel) -> int:
-        categoria.id = self._proximo_id
-        self._categorias[categoria.id] = categoria
-        self._proximo_id += 1
-        return categoria.id
+    def alterar(self, entidade: Categoria) -> Categoria:
+        return self.dao.alterar(entidade)
 
-    def buscar_por_id(self, id: int) -> CategoriaModel | None:
-        return self._categorias.get(id)
+    def excluir(self, id: int) -> None:
+        self.dao.excluir(id)
 
-    def listar(self) -> list[CategoriaModel]:
-        return list(self._categorias.values())
+    def obter_por_id(self, id: int) -> Categoria | None:
+        return self.dao.obter_por_id(id)
 
-    def atualizar(self, categoria: CategoriaModel) -> None:
-        if categoria.id not in self._categorias:
-            raise KeyError(f"Categoria com id={categoria.id} não encontrada")
-        self._categorias[categoria.id] = categoria
-
-    def remover(self, id: int) -> None:
-        self._categorias.pop(id, None)
+    def listar(self) -> list[Categoria]:
+        return self.dao.listar()
 
 
-class ProdutoRepository(ProdutoDAOInterface):
-    """Repositório em memória para `ProdutoModel`."""
+class ProdutoRepository(InterfaceDAO[Produto]):
+    def __init__(self, conexao: IConexaoBD | None = None) -> None:
+        self.dao = ProdutoDAO_ORM(conexao or ConexaoBD_ORM())
 
-    def __init__(self) -> None:
-        self._produtos: dict[int, ProdutoModel] = {}
-        self._proximo_id = 1
+    def incluir(self, entidade: Produto) -> Produto:
+        return self.dao.incluir(entidade)
 
-    def inserir(self, produto: ProdutoModel) -> int:
-        produto.id = self._proximo_id
-        self._produtos[produto.id] = produto
-        self._proximo_id += 1
-        return produto.id
+    def alterar(self, entidade: Produto) -> Produto:
+        return self.dao.alterar(entidade)
 
-    def buscar_por_id(self, id: int) -> ProdutoModel | None:
-        return self._produtos.get(id)
+    def excluir(self, id: int) -> None:
+        self.dao.excluir(id)
 
-    def listar(self) -> list[ProdutoModel]:
-        return list(self._produtos.values())
+    def obter_por_id(self, id: int) -> Produto | None:
+        return self.dao.obter_por_id(id)
 
-    def atualizar(self, produto: ProdutoModel) -> None:
-        if produto.id not in self._produtos:
-            raise KeyError(f"Produto com id={produto.id} não encontrado")
-        self._produtos[produto.id] = produto
-
-    def remover(self, id: int) -> None:
-        self._produtos.pop(id, None)
+    def listar(self) -> list[Produto]:
+        return self.dao.listar()
 
 
-class VendaRepository(VendaDAOInterface):
-    """Repositório em memória para `VendaModel`."""
+class VendaRepository(InterfaceDAO[Venda]):
+    def __init__(self, conexao: IConexaoBD | None = None) -> None:
+        self.dao = VendaDAO_ORM(conexao or ConexaoBD_ORM())
 
-    def __init__(self) -> None:
-        self._vendas: dict[int, VendaModel] = {}
-        self._proximo_id = 1
+    def incluir(self, entidade: Venda) -> Venda:
+        return self.dao.incluir(entidade)
 
-    def inserir(self, venda: VendaModel) -> int:
-        venda.id = self._proximo_id
-        self._vendas[venda.id] = venda
-        self._proximo_id += 1
-        return venda.id
+    def alterar(self, entidade: Venda) -> Venda:
+        return self.dao.alterar(entidade)
 
-    def buscar_por_id(self, id: int) -> VendaModel | None:
-        return self._vendas.get(id)
+    def excluir(self, id: int) -> None:
+        self.dao.excluir(id)
 
-    def listar(self) -> list[VendaModel]:
-        return list(self._vendas.values())
+    def obter_por_id(self, id: int) -> Venda | None:
+        return self.dao.obter_por_id(id)
 
-    def atualizar(self, venda: VendaModel) -> None:
-        if venda.id not in self._vendas:
-            raise KeyError(f"Venda com id={venda.id} não encontrada")
-        self._vendas[venda.id] = venda
-
-    def remover(self, id: int) -> None:
-        self._vendas.pop(id, None)
+    def listar(self) -> list[Venda]:
+        return self.dao.listar()
 
 
-class FormaPagamentoRepository(FormaPagamentoDAOInterface):
-    """Repositório em memória para `FormaPagamentoModel`."""
+class FormaPagamentoRepository(InterfaceDAO[FormaPagamento]):
+    def __init__(self, conexao: IConexaoBD | None = None) -> None:
+        self.dao = FormaPagamentoDAO_ORM(conexao or ConexaoBD_ORM())
 
-    def __init__(self) -> None:
-        self._formas: dict[int, FormaPagamentoModel] = {}
-        self._proximo_id = 1
+    def incluir(self, entidade: FormaPagamento) -> FormaPagamento:
+        return self.dao.incluir(entidade)
 
-    def inserir(self, forma_pagamento: FormaPagamentoModel) -> int:
-        forma_pagamento.id = self._proximo_id
-        self._formas[forma_pagamento.id] = forma_pagamento
-        self._proximo_id += 1
-        return forma_pagamento.id
+    def alterar(self, entidade: FormaPagamento) -> FormaPagamento:
+        return self.dao.alterar(entidade)
 
-    def buscar_por_id(self, id: int) -> FormaPagamentoModel | None:
-        return self._formas.get(id)
+    def excluir(self, id: int) -> None:
+        self.dao.excluir(id)
 
-    def listar(self) -> list[FormaPagamentoModel]:
-        return list(self._formas.values())
+    def obter_por_id(self, id: int) -> FormaPagamento | None:
+        return self.dao.obter_por_id(id)
 
-    def atualizar(self, forma_pagamento: FormaPagamentoModel) -> None:
-        if forma_pagamento.id not in self._formas:
-            raise KeyError(
-                f"Forma de pagamento com id={forma_pagamento.id} não encontrada"
-            )
-        self._formas[forma_pagamento.id] = forma_pagamento
-
-    def remover(self, id: int) -> None:
-        self._formas.pop(id, None)
+    def listar(self) -> list[FormaPagamento]:
+        return self.dao.listar()
 
 
-class VendaProdutoRepository(VendaProdutoDAOInterface):
-    """Repositório em memória para `VendaProduto` (chave composta)."""
+class VendaProdutoRepository(InterfaceDAO[ItemVenda]):
+    def __init__(self, conexao: IConexaoBD | None = None) -> None:
+        self.dao = VendaProdutoDAO_ORM(conexao or ConexaoBD_ORM())
 
-    def __init__(self) -> None:
-        self._itens: dict[tuple[int, int], VendaProduto] = {}
+    def incluir(self, entidade: ItemVenda) -> ItemVenda:
+        return self.dao.incluir(entidade)
 
-    @staticmethod
-    def _chave(item: VendaProduto) -> tuple[int, int]:
-        return (item.venda.id, item.produto.id)
+    def alterar(self, entidade: ItemVenda) -> ItemVenda:
+        return self.dao.alterar(entidade)
 
-    def inserir(self, item: VendaProduto) -> None:
-        self._itens[self._chave(item)] = item
+    def excluir(self, id: int) -> None:
+        self.dao.excluir(id)
 
-    def listar(self) -> list[VendaProduto]:
-        return list(self._itens.values())
+    def obter_por_id(self, id: int) -> ItemVenda | None:
+        return self.dao.obter_por_id(id)
 
-    def listar_por_venda(self, id_venda: int) -> list[VendaProduto]:
-        return [item for item in self._itens.values() if item.venda.id == id_venda]
+    def listar(self) -> list[ItemVenda]:
+        return self.dao.listar()
 
-    def buscar_por_venda_e_produto(self, id_venda: int, id_produto: int) -> VendaProduto | None:
-        return self._itens.get((id_venda, id_produto))
+    def listar_por_venda(self, id_venda: int) -> list[ItemVenda]:
+        return self.dao.listar_por_venda(id_venda)
 
-    def atualizar(self, item: VendaProduto) -> None:
-        chave = self._chave(item)
-        if chave not in self._itens:
-            raise KeyError(f"Item de venda {chave} não encontrado")
-        self._itens[chave] = item
-
-    def remover(self, id_venda: int, id_produto: int) -> None:
-        self._itens.pop((id_venda, id_produto), None)
+    def buscar_por_venda_e_produto(
+        self, id_venda: int, id_produto: int
+    ) -> ItemVenda | None:
+        return self.dao.buscar_por_venda_e_produto(id_venda, id_produto)

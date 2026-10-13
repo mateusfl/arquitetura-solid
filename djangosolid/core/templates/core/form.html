@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}{% if editando %}Editar{% else %}Novo{% endif %} | {{ titulo }}{% endblock %}
+{% block content %}
+    <section class="card">
+        <h1>{% if editando %}Editar{% else %}Novo{% endif %}: {{ titulo }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {{ form.as_p }}
+            <div class="actions">
+                <button type="submit">Salvar</button>
+                <a class="button secondary" href="{% url 'core:listar' recurso=slug %}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block title %}Excluir | {{ titulo }}{% endblock %}
+{% block content %}
+    <section class="card">
+        <h1>Excluir registro</h1>
+        <p>Confirma a exclusão do registro <strong>#{{ entidade.id }}</strong> de {{ titulo }}?</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="actions">
+                <button class="danger" type="submit">Confirmar exclusão</button>
+                <a class="button secondary" href="{% url 'core:listar' recurso=slug %}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

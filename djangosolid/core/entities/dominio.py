@@ -1,31 +1,25 @@
 from dataclasses import dataclass
-from enum import Enum
+from datetime import datetime
+from decimal import Decimal
+from enum import IntEnum
 
 
 @dataclass
 class CategoriaModel:
-    id: int
-    tipo_categoria: str
-    descricao: str
-    margem_lucro: float
-
-    def __init__(self, id, descricao):
-        self.id = id
-        self.descricao = descricao
+    id: int | None = None
+    tipo_categoria: int = 0
+    descricao: str = ""
+    margem_lucro: Decimal = Decimal("0.00")
 
 
 @dataclass
 class VendaModel:
-    id: int
-    datahora_venda: str
-    desconto: float
-    
-    def __init__(self, id, desconto):
-        self.id = id
-        self.desconto = desconto
+    id: int | None = None
+    datahora_venda: datetime | None = None
+    desconto: Decimal = Decimal("0.00")
 
 
-class TipoPagamento(Enum):
+class TipoPagamento(IntEnum):
     PIX = 1
     CREDITO = 2
     DEBITO = 3
@@ -34,28 +28,29 @@ class TipoPagamento(Enum):
 
 @dataclass
 class FormaPagamentoModel:
-    id: int
-    tipo_pagamento: TipoPagamento
-    valor_pago: float
-    venda: VendaModel
+    id: int | None = None
+    tipo_pagamento: TipoPagamento = TipoPagamento.PIX
+    valor_pago: Decimal = Decimal("0.00")
+    venda: VendaModel | None = None
 
 
 @dataclass
 class ProdutoModel:
-    id: int
-    nome: str
-    descricao: str
-    preco: float
-    quantidade_estoque: int
-    alerta_estoque_baixo: int
-    codigo_interno: int
-    margem_lucro: float
-    categoria: CategoriaModel
+    id: int | None = None
+    nome: str = ""
+    descricao: str = ""
+    preco: Decimal = Decimal("0.00")
+    quantidade_estoque: int = 0
+    alerta_estoque_baixo: int = 0
+    codigo_interno: str = ""
+    margem_lucro: Decimal = Decimal("0.00")
+    categoria: CategoriaModel | None = None
 
 
 @dataclass
 class VendaProduto:
-    quantidade_vendida: int
-    preco_momento_venda: float
-    venda: VendaModel
-    produto: ProdutoModel
+    id: int | None = None
+    quantidade_vendida: int = 0
+    preco_momento_venda: Decimal = Decimal("0.00")
+    venda: VendaModel | None = None
+    produto: ProdutoModel | None = None
