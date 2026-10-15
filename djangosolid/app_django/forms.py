@@ -1,6 +1,6 @@
 from django import forms
 
-from core.models import Categoria, Produto, Venda
+from app_django.models import Categoria, Produto, Venda
 
 
 DB_ALIAS = "db_solid"

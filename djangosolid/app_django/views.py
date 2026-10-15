@@ -8,7 +8,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
-from core.entities.dominio import (
+from core.domain.entities.dominio import (
     CategoriaModel,
     FormaPagamentoModel,
     ProdutoModel,
@@ -16,15 +16,23 @@ from core.entities.dominio import (
     VendaModel,
     VendaProduto,
 )
-from core.forms import (
+from app_django.forms import (
     CategoriaForm,
     FormaPagamentoForm,
     ProdutoForm,
     VendaForm,
     VendaProdutoForm,
 )
-from core.models import Categoria as CategoriaORM, Produto as ProdutoORM, Venda as VendaORM
-from core.repositories.repository import (
+from app_django.models import Categoria as CategoriaORM, Produto as ProdutoORM, Venda as VendaORM
+from app_django.implementation.services.dao import (
+    CategoriaDAO_ORM,
+    ConexaoBD_ORM,
+    FormaPagamentoDAO_ORM,
+    ProdutoDAO_ORM,
+    VendaDAO_ORM,
+    VendaProdutoDAO_ORM,
+)
+from core.domain.use_cases.repository import (
     CategoriaRepository,
     FormaPagamentoRepository,
     ProdutoRepository,
@@ -120,7 +128,7 @@ def _item_venda_entidade(dados: dict[str, Any], id: int | None) -> VendaProduto:
 
 RECURSOS: dict[str, RecursoCRUD] = {
     "categorias": RecursoCRUD(
-        "Categorias", CategoriaForm, CategoriaRepository,
+        "Categorias", CategoriaForm, lambda: CategoriaRepository(CategoriaDAO_ORM(ConexaoBD_ORM())),
         ("ID", "Tipo", "Descrição", "Margem (%)"),
         _categoria_entidade,
         lambda item: {
@@ -131,7 +139,7 @@ RECURSOS: dict[str, RecursoCRUD] = {
         lambda item: (item.id, item.tipo_categoria, item.descricao, item.margem_lucro),
     ),
     "produtos": RecursoCRUD(
-        "Produtos", ProdutoForm, ProdutoRepository,
+        "Produtos", ProdutoForm, lambda: ProdutoRepository(ProdutoDAO_ORM(ConexaoBD_ORM())),
         ("ID", "Nome", "Descrição", "Preço (R$)", "Estoque", "Categoria"),
         _produto_entidade,
         lambda item: {
@@ -148,14 +156,14 @@ RECURSOS: dict[str, RecursoCRUD] = {
                       item.quantidade_estoque, item.categoria.descricao if item.categoria else "—"),
     ),
     "vendas": RecursoCRUD(
-        "Vendas", VendaForm, VendaRepository,
+        "Vendas", VendaForm, lambda: VendaRepository(VendaDAO_ORM(ConexaoBD_ORM())),
         ("ID", "Data e hora", "Desconto (R$)"),
         _venda_entidade,
         lambda item: {"desconto": item.desconto},
         lambda item: (item.id, item.datahora_venda or "—", item.desconto),
     ),
     "pagamentos": RecursoCRUD(
-        "Formas de pagamento", FormaPagamentoForm, FormaPagamentoRepository,
+        "Formas de pagamento", FormaPagamentoForm, lambda: FormaPagamentoRepository(FormaPagamentoDAO_ORM(ConexaoBD_ORM())),
         ("ID", "Tipo", "Valor pago (R$)", "Venda"),
         _pagamento_entidade,
         lambda item: {
@@ -167,7 +175,7 @@ RECURSOS: dict[str, RecursoCRUD] = {
                       item.venda.id if item.venda else "—"),
     ),
     "itens-venda": RecursoCRUD(
-        "Itens de venda", VendaProdutoForm, VendaProdutoRepository,
+        "Itens de venda", VendaProdutoForm, lambda: VendaProdutoRepository(VendaProdutoDAO_ORM(ConexaoBD_ORM())),
         ("ID", "Venda", "Produto", "Quantidade", "Preço na venda (R$)"),
         _item_venda_entidade,
         lambda item: {

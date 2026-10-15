@@ -3,7 +3,7 @@
 from django.db import connections
 from django.db.backends.base.base import BaseDatabaseWrapper
 
-from core.entities.dominio import (
+from core.domain.entities.dominio import (
     CategoriaModel as Categoria,
     FormaPagamentoModel as FormaPagamento,
     ProdutoModel as Produto,
@@ -11,17 +11,17 @@ from core.entities.dominio import (
     VendaModel as Venda,
     VendaProduto as ItemVenda,
 )
-from core.models import (
+from app_django.models import (
     Categoria as CategoriaORM,
     FormaPagamento as FormaPagamentoORM,
     Produto as ProdutoORM,
     Venda as VendaORM,
     VendaProduto as ItemVendaORM,
 )
-from core.ports.interfaces import IConexaoBD, InterfaceDAO
+from core.domain.use_cases.ports.interfaces_dao import ICrudDAO
 
 
-class ConexaoBD_ORM(IConexaoBD):
+class ConexaoBD_ORM:
     DB_ALIAS = "db_solid"
 
     def obter_conexao(self) -> BaseDatabaseWrapper:
@@ -29,8 +29,8 @@ class ConexaoBD_ORM(IConexaoBD):
         return connections[self.DB_ALIAS]
 
 
-class CategoriaDAO_ORM(InterfaceDAO[Categoria]):
-    def __init__(self, conexao: IConexaoBD) -> None:
+class CategoriaDAO_ORM(ICrudDAO):
+    def __init__(self, conexao: ConexaoBD_ORM) -> None:
         self._conexao = conexao
         self._conexao.obter_conexao()
 
@@ -77,8 +77,8 @@ class CategoriaDAO_ORM(InterfaceDAO[Categoria]):
         return [self._dominio(registro) for registro in self._manager.order_by("descricao")]
 
 
-class ProdutoDAO_ORM(InterfaceDAO[Produto]):
-    def __init__(self, conexao: IConexaoBD) -> None:
+class ProdutoDAO_ORM(ICrudDAO):
+    def __init__(self, conexao: ConexaoBD_ORM) -> None:
         self._conexao = conexao
         self._conexao.obter_conexao()
 
@@ -144,8 +144,8 @@ class ProdutoDAO_ORM(InterfaceDAO[Produto]):
         return [self._dominio(registro) for registro in registros]
 
 
-class VendaDAO_ORM(InterfaceDAO[Venda]):
-    def __init__(self, conexao: IConexaoBD) -> None:
+class VendaDAO_ORM(ICrudDAO):
+    def __init__(self, conexao: ConexaoBD_ORM) -> None:
         self._conexao = conexao
         self._conexao.obter_conexao()
 
@@ -185,8 +185,8 @@ class VendaDAO_ORM(InterfaceDAO[Venda]):
         return [self._dominio(registro) for registro in self._manager.order_by("-datahora_venda")]
 
 
-class FormaPagamentoDAO_ORM(InterfaceDAO[FormaPagamento]):
-    def __init__(self, conexao: IConexaoBD) -> None:
+class FormaPagamentoDAO_ORM(ICrudDAO):
+    def __init__(self, conexao: ConexaoBD_ORM) -> None:
         self._conexao = conexao
         self._conexao.obter_conexao()
 
@@ -244,8 +244,8 @@ class FormaPagamentoDAO_ORM(InterfaceDAO[FormaPagamento]):
         return [self._dominio(registro) for registro in registros]
 
 
-class VendaProdutoDAO_ORM(InterfaceDAO[ItemVenda]):
-    def __init__(self, conexao: IConexaoBD) -> None:
+class VendaProdutoDAO_ORM(ICrudDAO):
+    def __init__(self, conexao: ConexaoBD_ORM) -> None:
         self._conexao = conexao
         self._conexao.obter_conexao()
 
