@@ -3,7 +3,7 @@ from django import forms
 from app_django.models import Categoria, Produto, Venda
 
 
-DB_ALIAS = "db_solid"
+DB_ALIAS = "default"
 
 
 class CategoriaForm(forms.Form):

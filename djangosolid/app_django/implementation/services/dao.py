@@ -22,7 +22,7 @@ from core.domain.use_cases.ports.interfaces_dao import ICrudDAO
 
 
 class ConexaoBD_ORM:
-    DB_ALIAS = "db_solid"
+    DB_ALIAS = "default"
 
     def obter_conexao(self) -> BaseDatabaseWrapper:
         """Obtém a conexão SQLite configurada em settings.DATABASES."""

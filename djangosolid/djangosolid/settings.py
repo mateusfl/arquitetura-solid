@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app_django.apps.AppDjangoConfig',
+    'app_django',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -81,17 +81,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-DATABASES['db_solid'] = {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': BASE_DIR / 'db_solid.sqlite3',
-    'ATOMIC_REQUESTS': False,
-    'TIME_ZONE': 'America/Fortaleza',
-    'CONN_HEALTH_CHECKS': True,
-    'CONN_MAX_AGE': 60,
-    'AUTOCOMMIT': True,
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
