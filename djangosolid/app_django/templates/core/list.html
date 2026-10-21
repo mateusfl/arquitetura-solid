@@ -3,7 +3,7 @@
 {% block content %}
     <div class="actions" style="justify-content: space-between; align-items: center; margin-bottom: 1rem">
         <h1>{{ titulo }}</h1>
-        <a class="button" href="{% url 'core:criar' recurso=slug %}">Novo registro</a>
+        <a class="button" href="{% url create_url %}">Novo registro</a>
     </div>
     <section class="card table-wrap">
         {% if linhas %}
@@ -14,8 +14,8 @@
                         <tr>
                             {% for celula in celulas %}<td>{{ celula|default_if_none:"—" }}</td>{% endfor %}
                             <td><div class="actions">
-                                <a class="button secondary" href="{% url 'core:editar' recurso=slug id=id %}">Editar</a>
-                                <a class="button danger" href="{% url 'core:excluir' recurso=slug id=id %}">Excluir</a>
+                                <a class="button secondary" href="{% url update_url id=id %}">Editar</a>
+                                <a class="button danger" href="{% url delete_url id=id %}">Excluir</a>
                             </div></td>
                         </tr>
                     {% endfor %}

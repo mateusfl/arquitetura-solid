@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Generic, TypeVar
 
 from core.domain.entities.dominio import (
@@ -14,7 +14,7 @@ from core.domain.use_cases.ports.interfaces_dao import ICrudDAO
 T = TypeVar("T")
 
 
-class BaseCrudRepository(ABC, Generic[T]):
+class BaseCrudRepository(ICrudDAO, Generic[T]):
     """Regras da aplicacao antes de delegar operacoes ao DAO."""
 
     def __init__(self, dao: ICrudDAO) -> None:
